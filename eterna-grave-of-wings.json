@@ -1,0 +1,168 @@
+{
+  "title": "The Grave of Wings",
+  "subtitle": "Eterna · graveyard of the star-seekers",
+  "seaName": "The Sky They Sought",
+  "theme": "ashfall",
+
+  "kingdoms": [
+    {
+      "name": "The Wreckfields",
+      "sub": "Airships, rockets, mad inventions",
+      "theme": "mountains",
+      "position": "east",
+      "provinces": [
+        {
+          "name": "The Northern Heaps",
+          "notes": [
+            { "title": "No set paths — too difficult to map", "days": 60 },
+            { "title": "Footprints of all sizes", "days": 45, "links": ["Scatter like illusive nomads", "Tracks of makeshift wooden carts"] },
+            { "title": "Tracks of makeshift wooden carts", "days": 120 },
+            { "title": "Lost artifacts between the debris", "days": 30, "links": ["Trinkets to sell", "Sweeping the North"] },
+            { "title": "Trinkets to sell", "days": 200 }
+          ]
+        },
+        {
+          "name": "The Rocket Steppes",
+          "notes": [
+            { "title": "Rockets that never left", "days": 90, "links": ["They had no choice but to look up"] },
+            { "title": "The mad inventions", "days": 150 },
+            { "title": "Toxic air of amalgamated components", "days": 10, "links": ["Time slowness — the radioactive element"] },
+            { "title": "Looters and stragglers everywhere", "days": 250, "links": ["Talk to the Traders"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Sweep Routes",
+      "sub": "The kids — illusive nomads of the Graveyard",
+      "theme": "plains",
+      "position": "west",
+      "provinces": [
+        {
+          "name": "Camp of the Captain",
+          "notes": [
+            { "title": "The Captain — pale, lanky, goggled", "days": 5, "links": ["Sweeping the North", "Have to be careful of the Bandits", "The tallest becomes Captain"] },
+            { "title": "The tallest becomes Captain", "days": 80 },
+            { "title": "Sweeping the North", "days": 5, "links": ["Have to be careful of the Bandits", "Lost artifacts between the debris"] },
+            { "title": "Have to be careful of the Bandits", "days": 15, "links": ["We'll take some of theirs"] },
+            { "title": "We'll take some of theirs", "days": 15 }
+          ]
+        },
+        {
+          "name": "The Scatter-Paths",
+          "notes": [
+            { "title": "Scatter like illusive nomads", "days": 70 },
+            { "title": "An immature, hardy bunch", "days": 100 },
+            { "title": "The kids stay kids", "days": 8, "links": ["Time slowness — the radioactive element"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Bandit North",
+      "sub": "A knight's order in exile",
+      "theme": "hills",
+      "position": "north",
+      "provinces": [
+        {
+          "name": "The Exiles' Hold",
+          "notes": [
+            { "title": "A knight's order that fled capture", "days": 180, "links": ["The secret large-scale mission"] },
+            { "title": "The secret large-scale mission", "days": 90, "links": ["Usurping a faraway throne"] },
+            { "title": "Usurping a faraway throne", "days": 90 },
+            { "title": "The cold standoff at the center", "days": 160, "links": ["Holoman, the President", "The neutral zone accords"] },
+            { "title": "Leaders who never age out of power", "days": 8, "links": ["Time slowness — the radioactive element"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Canny Grounds",
+      "sub": "A dark, ritualistic group — or so the rumours say",
+      "theme": "swamp",
+      "position": "south",
+      "provinces": [
+        {
+          "name": "The Blood Sightings",
+          "notes": [
+            { "title": "Sightings always involve blood", "days": 140, "links": ["Victims, or animals?"] },
+            { "title": "Victims, or animals?", "days": 140 },
+            { "title": "Do they even call themselves Cannys?", "days": 200 },
+            { "title": "Don't dive too deep into someone's secrets", "days": 50, "links": ["The neutral zone accords"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Neutral Zone",
+      "sub": "The Traders — befriend everybody, nobody loses",
+      "theme": "plains",
+      "position": "center",
+      "provinces": [
+        {
+          "name": "The Central Markets",
+          "notes": [
+            { "title": "Talk to the Traders", "days": 20, "links": ["Befriend everybody — accepted tension", "The neutral zone accords"] },
+            { "title": "The neutral zone accords", "days": 40, "links": ["Befriend everybody — accepted tension"] },
+            { "title": "Befriend everybody — accepted tension", "days": 20, "links": ["Everybody wins, nobody loses"] },
+            { "title": "Everybody wins, nobody loses", "days": 60 },
+            { "title": "Lawless, yet everyone talks", "days": 35, "links": ["Minimal use of the Common Language"] },
+            { "title": "Minimal use of the Common Language", "days": 90 },
+            { "title": "Think of Borealis", "days": 3 },
+            { "title": "Read the piece on AO", "days": 3 }
+          ]
+        },
+        {
+          "name": "The Convoy Ground",
+          "notes": [
+            { "title": "Holoman, the President", "days": 12, "links": ["A smile you cannot trust", "We only wished to find a place to belong", "The cold standoff at the center", "Wolf Brigade reference"] },
+            { "title": "A smile you cannot trust", "days": 25, "links": ["A cobra before prey"] },
+            { "title": "A cobra before prey", "days": 25 },
+            { "title": "We only wished to find a place to belong", "days": 12, "links": ["They look to the starry sky for belonging"] },
+            { "title": "Red-lens gasmasks, breathing changed", "days": 30, "links": ["Wolf Brigade reference", "A strange sigil"] },
+            { "title": "A strange sigil", "days": 100 },
+            { "title": "Wolf Brigade reference", "days": 30 },
+            { "title": "The convoy of soldiers and tanks", "days": 170, "links": ["The cold standoff at the center"] },
+            { "title": "Half a century in the center", "days": 170, "links": ["Leaders who never age out of power"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Broken Dreams",
+      "sub": "Threads of spoken truth",
+      "theme": "forest",
+      "position": "northeast",
+      "provinces": [
+        {
+          "name": "The Star-Seekers' Folly",
+          "notes": [
+            { "title": "Mortals playing with fire", "days": 80, "links": ["Only the foolish tempt power they cannot control"] },
+            { "title": "Traversing dimensions without regard", "days": 80 },
+            { "title": "The Wildfire of innovation", "days": 65, "links": ["Empires, Kings, saved lives", "Mortality mislabelled as disease"] },
+            { "title": "Empires, Kings, saved lives", "days": 110 },
+            { "title": "Mortality mislabelled as disease", "days": 65, "links": ["Cheating at the Game of Death"] },
+            { "title": "Cheating at the Game of Death", "days": 65 },
+            { "title": "They had no choice but to look up", "days": 55, "links": ["They look to the starry sky for belonging"] },
+            { "title": "They look to the starry sky for belonging", "days": 55, "links": ["Fellow humans are ants in their eyes"] },
+            { "title": "Fellow humans are ants in their eyes", "days": 130, "links": ["Superiority fuels their motivation"] },
+            { "title": "Superiority fuels their motivation", "days": 130 }
+          ]
+        },
+        {
+          "name": "Threads of Spoken Truth",
+          "notes": [
+            { "title": "Only the foolish tempt power they cannot control", "days": 40, "links": ["The pursuit of everything at its edge"] },
+            { "title": "The pursuit of everything at its edge", "days": 40, "links": ["Skydiving into nothingness"] },
+            { "title": "Skydiving into nothingness", "days": 40, "links": ["Someday, a light may save me"] },
+            { "title": "Someday, a light may save me", "days": 6, "links": ["The one who discovers unlimited energy"] },
+            { "title": "The one who discovers unlimited energy", "days": 6 },
+            { "title": "Time slowness — the radioactive element", "days": 6, "links": ["Reduced rate of cell decay", "The kids stay kids", "Leaders who never age out of power"] },
+            { "title": "Reduced rate of cell decay", "days": 6 },
+            { "title": "Take note of its broken dreams", "days": 90 }
+          ]
+        }
+      ]
+    }
+  ]
+}

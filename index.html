@@ -69,6 +69,7 @@
       <select id="themeSel">
         <option value="sepia">Sepia Atlas</option>
         <option value="midnight">Midnight Ink</option>
+        <option value="ashfall">Ashfall</option>
       </select>
     </label>
     <label>Label density <input type="range" id="sLabels" min="0" max="100" value="55"></label>
@@ -193,7 +194,7 @@ function finishData(allNotes,rand){
 function buildCustomData(rand,ds){
   const kingdoms=[]; let id=0; const allNotes=[]; const byTitle={};
   for(const kd of ds.kingdoms){
-    const k={name:kd.name||'Unnamed',sub:kd.sub||'',theme:kd.theme||'plains',provinces:[]};
+    const k={name:kd.name||'Unnamed',sub:kd.sub||'',theme:kd.theme||'plains',pos:kd.position,provinces:[]};
     for(const pd of kd.provinces||[]){
       const p={name:pd.name||'Unnamed',notes:[]};
       for(const nd of pd.notes||[]){
@@ -229,12 +230,18 @@ function generateWorld(seedStr){
     : generateData(mulberry32(seed^0x85ebca6b));
   const K=data.kingdoms.length;
 
-  // kingdom centers — golden-angle ring with jitter
+  // kingdom centers — golden-angle ring with jitter; optional "position" hints override
   const cx=W/2,cy=H/2;
+  const ANCHORS={north:-Math.PI/2,south:Math.PI/2,east:0,west:Math.PI,
+    northeast:-Math.PI/4,northwest:-3*Math.PI/4,southeast:Math.PI/4,southwest:3*Math.PI/4};
   data.kingdoms.forEach((k,i)=>{
-    const a=i*2.39996+rand()*0.6, rr=(0.16+0.16*rand())*Math.min(W,H);
-    k.cx=cx+Math.cos(a)*rr*1.45; k.cy=cy+Math.sin(a)*rr;
     k.r=300+rand()*130;
+    if(k.pos==='center'){
+      k.cx=cx+(rand()-0.5)*100; k.cy=cy+(rand()-0.5)*80; return;
+    }
+    const a=(k.pos in ANCHORS)?ANCHORS[k.pos]+(rand()-0.5)*0.25:i*2.39996+rand()*0.6;
+    const rr=(0.16+0.16*rand())*Math.min(W,H);
+    k.cx=cx+Math.cos(a)*rr*1.45; k.cy=cy+Math.sin(a)*rr;
   });
 
   // scalar field
@@ -500,6 +507,14 @@ const THEMES={
     roadRGB:'150,165,195', tuftRGB:'120,135,165', haloRGB:'34,40,54',
     vignetteRGB:'0,0,8', grain:[8,22,3,8], grainBlend:'screen',
     seaName:'The Unlit Deep',
+  },
+  ashfall:{
+    label:'Ashfall',
+    ink:'#43342c', inkRGB:'67,52,44', land:'#d9d2c4', sea:'#c6beae',
+    hatchRGB:'110,95,80', blotchRGB:'120,90,70', riverRGB:'105,70,50',
+    roadRGB:'140,80,50', tuftRGB:'115,100,85', haloRGB:'222,214,200',
+    vignetteRGB:'40,28,20', grain:[185,55,-6,-22],
+    seaName:'The Sky They Sought',
   },
 };
 let THEME=THEMES.sepia;

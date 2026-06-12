@@ -4,7 +4,7 @@
   "seaName": "The Eternal Sea",
   "theme": "midnight",
 
-  "_comment": "Schema: kingdoms[] -> provinces[] -> notes[]. Each note is a string title, or an object {title, days, links}. 'days' = days since last touched (drives prominence with link count). 'links' = array of other note titles (or numeric ids). 'theme' per kingdom: mountains | forest | hills | swamp | plains. Top-level 'theme' picks the visual theme: sepia | midnight.",
+  "_comment": "Schema: kingdoms[] -> provinces[] -> notes[]. Each note is a string title, or an object {title, days, links}. 'days' = days since last touched (drives prominence with link count). 'links' = array of other note titles (or numeric ids). 'theme' per kingdom: mountains | forest | hills | swamp | plains. Optional 'position' per kingdom: center | north | south | east | west | northeast | northwest | southeast | southwest. Top-level 'theme' picks the visual theme: sepia | midnight | ashfall.",
 
   "kingdoms": [
     {
