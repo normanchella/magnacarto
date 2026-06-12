@@ -1,0 +1,39 @@
+{
+  "title": "Eterna",
+  "subtitle": "Atlas of the Eterna Cycle",
+  "seaName": "The Eternal Sea",
+  "theme": "midnight",
+
+  "_comment": "Schema: kingdoms[] -> provinces[] -> notes[]. Each note is a string title, or an object {title, days, links}. 'days' = days since last touched (drives prominence with link count). 'links' = array of other note titles (or numeric ids). 'theme' per kingdom: mountains | forest | hills | swamp | plains. Top-level 'theme' picks the visual theme: sepia | midnight.",
+
+  "kingdoms": [
+    {
+      "name": "Example Kingdom",
+      "sub": "Replace with an Eterna faction or domain",
+      "theme": "mountains",
+      "provinces": [
+        {
+          "name": "Example Province",
+          "notes": [
+            "A plain note title",
+            { "title": "A linked, recent note", "days": 3, "links": ["A plain note title"] },
+            { "title": "An older note", "days": 400 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Second Kingdom",
+      "sub": "Worlds need at least two kingdoms to feel real",
+      "theme": "forest",
+      "provinces": [
+        {
+          "name": "Another Province",
+          "notes": [
+            { "title": "Cross-kingdom links work too", "links": ["A linked, recent note"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

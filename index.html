@@ -27,6 +27,7 @@
   #panel h2 button{background:none;border:none;color:var(--panel-text);font-size:15px;cursor:pointer;font-family:inherit;}
   #panel.collapsed .body{display:none;}
   #panel label{display:block;font-size:13px;margin-top:10px;letter-spacing:.5px;}
+  #panel select{width:100%;background:#1d1710;border:1px solid #6b5638;color:var(--panel-text);padding:4px 6px;border-radius:3px;font-family:inherit;font-size:13px;margin-top:2px;}
   #panel input[type=range]{width:100%;accent-color:#c9a86a;margin-top:2px;}
   #panel .toggles{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:13px;}
   #panel .toggles label{margin:0;display:flex;align-items:center;gap:5px;cursor:pointer;}
@@ -64,6 +65,12 @@
 <div id="panel">
   <h2>Cartographer's Table <button id="collapse">−</button></h2>
   <div class="body">
+    <label>Theme
+      <select id="themeSel">
+        <option value="sepia">Sepia Atlas</option>
+        <option value="midnight">Midnight Ink</option>
+      </select>
+    </label>
     <label>Label density <input type="range" id="sLabels" min="0" max="100" value="55"></label>
     <label>Decoration <input type="range" id="sDeco" min="0" max="100" value="60"></label>
     <label>Terrain detail <input type="range" id="sTerrain" min="0" max="100" value="70"></label>
@@ -79,6 +86,12 @@
       <input type="text" id="seedIn" placeholder="seed">
       <button id="regen">Redraw</button>
     </div>
+    <div class="seedrow">
+      <button id="loadBtn" style="flex:1">Load notes (JSON)</button>
+      <button id="sampleBtn">Sample</button>
+    </div>
+    <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+    <div class="hint" id="dataHint">Sample data · drop a JSON file anywhere to load your own notes.</div>
     <div class="hint">Scroll to zoom · drag to pan.<br>Zoom in to reveal provinces, then individual notes. Hover a settlement for its note.</div>
   </div>
 </div>
@@ -163,25 +176,57 @@ function generateData(rand){
       if(m!==n&&!n.links.includes(m.id)) n.links.push(m.id);
     }
   }
+  finishData(allNotes,rand);
+  return {kingdoms,allNotes};
+}
+
+function finishData(allNotes,rand){
   const inbound={}; allNotes.forEach(n=>n.links.forEach(l=>inbound[l]=(inbound[l]||0)+1));
   let maxDeg=1; allNotes.forEach(n=>{n.degree=n.links.length+(inbound[n.id]||0); maxDeg=Math.max(maxDeg,n.degree);});
   allNotes.forEach(n=>{
     const rec=Math.exp(-n.days/200);
     n.prominence=Math.min(1,.55*(n.degree/maxDeg)+.35*rec+.1*rand());
   });
-  return {kingdoms,allNotes};
+}
+
+/* Build data from a user-supplied dataset (see eterna-data.template.json for the schema) */
+function buildCustomData(rand,ds){
+  const kingdoms=[]; let id=0; const allNotes=[]; const byTitle={};
+  for(const kd of ds.kingdoms){
+    const k={name:kd.name||'Unnamed',sub:kd.sub||'',theme:kd.theme||'plains',provinces:[]};
+    for(const pd of kd.provinces||[]){
+      const p={name:pd.name||'Unnamed',notes:[]};
+      for(const nd of pd.notes||[]){
+        const title=typeof nd==='string'?nd:nd.title;
+        const days=typeof nd==='object'&&nd.days!=null?nd.days:Math.floor(rand()*rand()*720);
+        const note={id:id++,title,days,links:(typeof nd==='object'&&nd.links)||[],kingdom:k,province:p};
+        p.notes.push(note); allNotes.push(note); byTitle[title]=note;
+      }
+      k.provinces.push(p);
+    }
+    kingdoms.push(k);
+  }
+  // links may be note titles or numeric ids — resolve to ids
+  for(const n of allNotes){
+    n.links=n.links.map(l=>typeof l==='number'?l:(byTitle[l]?byTitle[l].id:-1)).filter(i=>i>=0&&i!==n.id);
+  }
+  finishData(allNotes,rand);
+  return {kingdoms,allNotes,title:ds.title,subtitle:ds.subtitle,seaName:ds.seaName};
 }
 
 /* ---------------- World generation ---------------- */
 const W=2600,H=1700;            // world coords
 const GW=170,GH=112;            // field grid
 let world=null;
+let currentDataset=null;   // user-loaded dataset (null = built-in sample)
 
 function generateWorld(seedStr){
   const seed=strSeed(seedStr);
   const rand=mulberry32(seed);
   const fbm=makeNoise(mulberry32(seed^0x9e3779b9));
-  const data=generateData(mulberry32(seed^0x85ebca6b));
+  const data=currentDataset
+    ? buildCustomData(mulberry32(seed^0x85ebca6b),currentDataset)
+    : generateData(mulberry32(seed^0x85ebca6b));
   const K=data.kingdoms.length;
 
   // kingdom centers — golden-angle ring with jitter
@@ -405,9 +450,68 @@ document.getElementById('regen').addEventListener('click',()=>{
   const v=document.getElementById('seedIn').value.trim()||(''+Math.floor(Math.random()*99999));
   world=generateWorld(v);document.getElementById('seedIn').value=v;fit();
 });
+document.getElementById('themeSel').addEventListener('change',e=>{applyTheme(e.target.value);draw();});
+
+/* ---------------- Dataset loading ---------------- */
+function loadDataset(ds,sourceName){
+  if(!ds||!Array.isArray(ds.kingdoms)||!ds.kingdoms.length){
+    alert('Could not load: the JSON needs a non-empty "kingdoms" array.\nSee eterna-data.template.json for the format.');return;
+  }
+  currentDataset=ds;
+  if(ds.theme&&THEMES[ds.theme])applyTheme(ds.theme);
+  const seed=document.getElementById('seedIn').value.trim()||'eterna';
+  world=generateWorld(seed);
+  document.getElementById('dataHint').textContent=(ds.title||sourceName||'Custom data')+' · '+world.data.allNotes.length+' notes loaded.';
+  fit();
+}
+async function loadFile(f){
+  try{ loadDataset(JSON.parse(await f.text()),f.name); }
+  catch(err){ alert('Could not read JSON: '+err.message); }
+}
+document.getElementById('loadBtn').addEventListener('click',()=>document.getElementById('fileIn').click());
+document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);e.target.value='';});
+document.getElementById('sampleBtn').addEventListener('click',()=>{
+  currentDataset=null;
+  world=generateWorld(document.getElementById('seedIn').value.trim()||'eterna');
+  document.getElementById('dataHint').textContent='Sample data · drop a JSON file anywhere to load your own notes.';
+  fit();
+});
+window.addEventListener('dragover',e=>e.preventDefault());
+window.addEventListener('drop',e=>{
+  e.preventDefault();
+  const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f)loadFile(f);
+});
+
+/* ---------------- Themes ---------------- */
+const THEMES={
+  sepia:{
+    label:'Sepia Atlas',
+    ink:'#4a3826', inkRGB:'74,56,38', land:'#ecdcb8', sea:'#f0e4c8',
+    hatchRGB:'122,101,73', blotchRGB:'150,120,80', riverRGB:'90,75,55',
+    roadRGB:'110,88,60', tuftRGB:'110,90,62', haloRGB:'240,228,200',
+    vignetteRGB:'60,40,20', grain:[200,55,-8,-30],
+    seaName:'The Sea of Forgetting',
+  },
+  midnight:{
+    label:'Midnight Ink',
+    ink:'#c6d2e4', inkRGB:'198,210,228', land:'#2c3344', sea:'#1d2330',
+    hatchRGB:'120,140,175', blotchRGB:'80,100,135', riverRGB:'140,160,190',
+    roadRGB:'150,165,195', tuftRGB:'120,135,165', haloRGB:'34,40,54',
+    vignetteRGB:'0,0,8', grain:[8,22,3,8], grainBlend:'screen',
+    seaName:'The Unlit Deep',
+  },
+};
+let THEME=THEMES.sepia;
+let INK,LAND,SEA;
+function applyTheme(id){
+  THEME=THEMES[id]||THEMES.sepia;
+  INK=THEME.ink; LAND=THEME.land; SEA=THEME.sea;
+  makeGrain();
+  const sel=document.getElementById('themeSel'); if(sel)sel.value=id in THEMES?id:'sepia';
+}
 
 /* ---------------- Drawing helpers ---------------- */
-const INK='#4a3826', INK_FAINT='rgba(74,56,38,', LAND='#ecdcb8', SEA='#f0e4c8';
 function smooth01(a,b,x){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);}
 
 function drawMountain(c,x,y,s){
@@ -490,13 +594,13 @@ function makeGrain(){
   grain=document.createElement('canvas');grain.width=256;grain.height=256;
   const g=grain.getContext('2d');const im=g.createImageData(256,256);
   const r=mulberry32(1234);
+  const [base,range,o1,o2]=THEME.grain;
   for(let i=0;i<im.data.length;i+=4){
-    const v=200+Math.floor(r()*55);
-    im.data[i]=v;im.data[i+1]=v-8;im.data[i+2]=v-30;im.data[i+3]=255;
+    const v=base+Math.floor(r()*range);
+    im.data[i]=v;im.data[i+1]=v+o1;im.data[i+2]=v+o2;im.data[i+3]=255;
   }
   g.putImageData(im,0,0);
 }
-makeGrain();
 
 /* ---------------- Main draw ---------------- */
 let placedLabels=[];   // screen-space rects for collision
@@ -515,7 +619,7 @@ function tryLabel(c,text,sx,sy,px,opts={}){
   placedLabels.push({x0,y0,x1:x0+w,y1:y0+h});
   c.textAlign=opts.align||'left';
   if(opts.spacing){c.save();c.letterSpacing=opts.spacing+'px';}
-  c.strokeStyle='rgba(240,228,200,0.85)';c.lineWidth=Math.max(2.5,px*0.18);c.lineJoin='round';
+  c.strokeStyle=`rgba(${THEME.haloRGB},0.85)`;c.lineWidth=Math.max(2.5,px*0.18);c.lineJoin='round';
   c.strokeText(text,sx,sy);
   c.fillStyle=opts.color||INK;
   c.fillText(text,sx,sy);
@@ -542,7 +646,7 @@ function draw(){
   const lw=v=>v/view.scale;
 
   // coast hatching (under land)
-  c.strokeStyle='rgba(122,101,73,0.5)';
+  c.strokeStyle=`rgba(${THEME.hatchRGB},0.5)`;
   for(let i=1;i<=4;i++){
     c.lineWidth=i*10; // world units — hatch bands scale with the map
     c.globalAlpha=0.17-i*0.03;
@@ -556,7 +660,7 @@ function draw(){
   // land blotches
   for(const b of world.blotches){
     const g=c.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
-    g.addColorStop(0,`rgba(150,120,80,${b.a})`);g.addColorStop(1,'rgba(150,120,80,0)');
+    g.addColorStop(0,`rgba(${THEME.blotchRGB},${b.a})`);g.addColorStop(1,`rgba(${THEME.blotchRGB},0)`);
     c.fillStyle=g;c.beginPath();c.arc(b.x,b.y,b.r,0,Math.PI*2);c.fill();
   }
   // coastline
@@ -564,7 +668,7 @@ function draw(){
 
   // rivers
   if(S.rivers){
-    c.strokeStyle='rgba(90,75,55,0.75)'; c.lineWidth=lw(1.2);
+    c.strokeStyle=`rgba(${THEME.riverRGB},0.75)`; c.lineWidth=lw(1.2);
     for(const rv of world.rivers){
       c.beginPath(); c.moveTo(rv[0][0],rv[0][1]);
       for(let i=1;i<rv.length;i++)c.lineTo(rv[i][0],rv[i][1]);
@@ -574,14 +678,14 @@ function draw(){
 
   // kingdom borders
   if(S.borders&&z<5){
-    c.fillStyle='rgba(74,56,38,0.45)';
+    c.fillStyle=`rgba(${THEME.inkRGB},0.45)`;
     for(const d of world.borderDots){c.beginPath();c.arc(d[0],d[1],lw(1.6),0,Math.PI*2);c.fill();}
   }
 
   // grass tufts — appear at regional zoom to fill plains
   const tuftA=smooth01(1.25,2.0,z)*0.45*S.terrain;
   if(tuftA>0.02){
-    c.strokeStyle=`rgba(110,90,62,${tuftA})`;c.lineWidth=lw(1);
+    c.strokeStyle=`rgba(${THEME.tuftRGB},${tuftA})`;c.lineWidth=lw(1);
     const tn=Math.floor(world.tufts.length*S.terrain);
     for(let i=0;i<tn;i++){
       const [x,y,s]=world.tufts[i];
@@ -605,7 +709,7 @@ function draw(){
   // roads (note links) — regional zoom and closer
   const roadAlpha=smooth01(1.6,2.6,z)*0.5*S.deco;
   if(S.roads&&roadAlpha>0.01){
-    c.strokeStyle=`rgba(110,88,60,${roadAlpha})`;
+    c.strokeStyle=`rgba(${THEME.roadRGB},${roadAlpha})`;
     c.lineWidth=lw(1); c.setLineDash([lw(5),lw(6)]);
     const byId={}; world.data.allNotes.forEach(n=>byId[n.id]=n);
     for(const n of world.data.allNotes){
@@ -661,7 +765,7 @@ function draw(){
     for(const k of world.data.kingdoms){
       const px=Math.min(46,Math.max(20,15*Math.sqrt(z)*1.4));
       ctx.globalAlpha=kAlpha;
-      tryLabel(ctx,k.name.toUpperCase(),w2sX(k.cx),w2sY(k.cy),px,{sc:true,align:'center',spacing:6,color:'rgba(74,56,38,0.85)'});
+      tryLabel(ctx,k.name.toUpperCase(),w2sX(k.cx),w2sY(k.cy),px,{sc:true,align:'center',spacing:6,color:`rgba(${THEME.inkRGB},0.85)`});
       ctx.globalAlpha=1;
     }
   }
@@ -670,7 +774,7 @@ function draw(){
   if(pAlpha>0.05){
     for(const k of world.data.kingdoms)for(const p of k.provinces){
       ctx.globalAlpha=pAlpha;
-      tryLabel(ctx,p.name,w2sX(p.cx),w2sY(p.cy)-10,15,{sc:true,align:'center',spacing:2,color:'rgba(90,70,46,0.9)'});
+      tryLabel(ctx,p.name,w2sX(p.cx),w2sY(p.cy)-10,15,{sc:true,align:'center',spacing:2,color:`rgba(${THEME.inkRGB},0.78)`});
       ctx.globalAlpha=1;
     }
   }
@@ -688,7 +792,8 @@ function draw(){
   // sea name at grand zoom
   if(z<1.6){
     ctx.globalAlpha=(1-smooth01(1.1,1.6,z))*0.7;
-    tryLabel(ctx,'The  Sea  of  Forgetting',w2sX(W*0.5),w2sY(H*0.07),20,{italic:true,align:'center',color:'rgba(105,86,60,0.8)'});
+    const seaName=(world.data.seaName||THEME.seaName).split('').join(' ');
+    tryLabel(ctx,seaName,w2sX(W*0.5),w2sY(H*0.07),20,{italic:true,align:'center',color:`rgba(${THEME.inkRGB},0.6)`});
     ctx.globalAlpha=1;
   }
 
@@ -701,18 +806,18 @@ function draw(){
   // cartouche
   ctx.save();
   ctx.translate(26,26);
-  ctx.fillStyle='rgba(240,228,200,0.92)';ctx.strokeStyle=INK;ctx.lineWidth=1.4;
+  ctx.fillStyle=`rgba(${THEME.haloRGB},0.92)`;ctx.strokeStyle=INK;ctx.lineWidth=1.4;
   ctx.beginPath();ctx.rect(0,0,250,64);ctx.fill();ctx.stroke();
   ctx.lineWidth=0.7;ctx.strokeRect(4,4,242,56);
   ctx.fillStyle=INK;ctx.textAlign='center';
-  ctx.font="21px 'IM Fell English SC'";ctx.fillText('Magna Carto',125,27);
-  ctx.font="italic 12.5px 'IM Fell English'";ctx.fillText('The Realms of Knowledge · seed '+world.seedStr,125,47);
+  ctx.font="21px 'IM Fell English SC'";ctx.fillText(world.data.title||'Magna Carto',125,27);
+  ctx.font="italic 12.5px 'IM Fell English'";ctx.fillText((world.data.subtitle||'The Realms of Knowledge')+' · seed '+world.seedStr,125,47);
   ctx.textAlign='left';
   ctx.restore();
   // legend
   if(S.legend){
     const lx=26,lh=118,ly=sh-lh-52;
-    ctx.fillStyle='rgba(240,228,200,0.92)';ctx.strokeStyle=INK;ctx.lineWidth=1.2;
+    ctx.fillStyle=`rgba(${THEME.haloRGB},0.92)`;ctx.strokeStyle=INK;ctx.lineWidth=1.2;
     ctx.beginPath();ctx.rect(lx,ly,178,lh);ctx.fill();ctx.stroke();
     ctx.fillStyle=INK;ctx.strokeStyle=INK;
     ctx.font="13px 'IM Fell English SC'";ctx.fillText('Legend',lx+12,ly+19);
@@ -727,11 +832,11 @@ function draw(){
   }
 
   // parchment grain + vignette
-  ctx.globalAlpha=0.13;ctx.globalCompositeOperation='multiply';
+  ctx.globalAlpha=0.13;ctx.globalCompositeOperation=THEME.grainBlend||'multiply';
   const pat=ctx.createPattern(grain,'repeat');ctx.fillStyle=pat;ctx.fillRect(0,0,sw,sh);
   ctx.globalCompositeOperation='source-over';
   const vg=ctx.createRadialGradient(sw/2,sh/2,Math.min(sw,sh)*0.45,sw/2,sh/2,Math.max(sw,sh)*0.75);
-  vg.addColorStop(0,'rgba(60,40,20,0)');vg.addColorStop(1,'rgba(60,40,20,0.28)');
+  vg.addColorStop(0,`rgba(${THEME.vignetteRGB},0)`);vg.addColorStop(1,`rgba(${THEME.vignetteRGB},0.28)`);
   ctx.globalAlpha=1;ctx.fillStyle=vg;ctx.fillRect(0,0,sw,sh);
 
   // zoom label
@@ -825,6 +930,7 @@ function updateHover(sx,sy){
 
 /* ---------------- Boot ---------------- */
 window.addEventListener('resize',resize);
+applyTheme('sepia');
 world=generateWorld('eterna');
 document.getElementById('seedIn').value='eterna';
 resize();fit();
