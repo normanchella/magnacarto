@@ -65,6 +65,13 @@
 <div id="panel">
   <h2>Cartographer's Table <button id="collapse">−</button></h2>
   <div class="body">
+    <label>Map
+      <select id="mapSel">
+        <option value="sample">Sample Atlas</option>
+        <option value="gow">Eterna · The Grave of Wings</option>
+        <option value="gojarna">Eterna · Gojarna</option>
+      </select>
+    </label>
     <label>Theme
       <select id="themeSel">
         <option value="sepia">Sepia Atlas</option>
@@ -460,6 +467,39 @@ document.getElementById('regen').addEventListener('click',()=>{
 });
 document.getElementById('themeSel').addEventListener('change',e=>{applyTheme(e.target.value);draw();});
 
+/* ---------------- Bundled map picker ---------------- */
+const MAPS={
+  sample:{label:'Sample Atlas'},
+  gow:{label:'Eterna · The Grave of Wings',url:'eterna-grave-of-wings.json'},
+  gojarna:{label:'Eterna · Gojarna',url:'eterna-gojarna.json'},
+};
+function setMapSel(id){
+  const sel=document.getElementById('mapSel');
+  if(id==='custom'&&![...sel.options].some(o=>o.value==='custom')){
+    const o=document.createElement('option');o.value='custom';o.textContent='Custom (loaded file)';sel.appendChild(o);
+  }
+  sel.value=id;
+}
+document.getElementById('mapSel').addEventListener('change',async e=>{
+  const id=e.target.value;
+  if(id==='custom')return;
+  if(id==='sample'){
+    currentDataset=null; applyTheme('sepia');
+    world=generateWorld(document.getElementById('seedIn').value.trim()||'eterna');
+    document.getElementById('dataHint').textContent='Sample data · drop a JSON file anywhere to load your own notes.';
+    fit(); return;
+  }
+  try{
+    const r=await fetch(MAPS[id].url);
+    if(!r.ok)throw new Error(r.status+' '+r.statusText);
+    loadDataset(await r.json(),MAPS[id].label);
+    setMapSel(id);
+  }catch(err){
+    alert('Could not load the bundled map ('+err.message+').\nIf you opened this file directly from disk, bundled maps need the website (or a local server) — or drag the JSON file onto the map instead.');
+    setMapSel(currentDataset?'custom':'sample');
+  }
+});
+
 /* ---------------- Dataset loading ---------------- */
 function loadDataset(ds,sourceName){
   if(!ds||!Array.isArray(ds.kingdoms)||!ds.kingdoms.length){
@@ -471,17 +511,19 @@ function loadDataset(ds,sourceName){
   world=generateWorld(seed);
   document.getElementById('dataHint').textContent=(ds.title||sourceName||'Custom data')+' · '+world.data.allNotes.length+' notes loaded.';
   fit();
+  return true;
 }
 async function loadFile(f){
-  try{ loadDataset(JSON.parse(await f.text()),f.name); }
+  try{ if(loadDataset(JSON.parse(await f.text()),f.name))setMapSel('custom'); }
   catch(err){ alert('Could not read JSON: '+err.message); }
 }
 document.getElementById('loadBtn').addEventListener('click',()=>document.getElementById('fileIn').click());
 document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);e.target.value='';});
 document.getElementById('sampleBtn').addEventListener('click',()=>{
-  currentDataset=null;
+  currentDataset=null; applyTheme('sepia');
   world=generateWorld(document.getElementById('seedIn').value.trim()||'eterna');
   document.getElementById('dataHint').textContent='Sample data · drop a JSON file anywhere to load your own notes.';
+  setMapSel('sample');
   fit();
 });
 window.addEventListener('dragover',e=>e.preventDefault());

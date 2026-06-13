@@ -11,6 +11,8 @@ Procedural cartography for personal knowledge graphs — your notes, rendered as
 - Semantic zoom: **Grand Map** (kingdoms, terrain, sea creatures) → **Regional** (provinces, roads, major notes) → **Note View** (every note, hover for details)
 - "Cartographer's Table" panel: label density / decoration / terrain detail sliders, plus toggles — the anti-clutter graphics settings
 - Deterministic: same seed → same map. Change the seed and hit Redraw for a new world.
+- Map picker: bundled Eterna maps (The Grave of Wings, Gojarna) plus your own data via JSON upload or drag-and-drop (schema in `eterna-data.template.json`)
+- Themes: Sepia Atlas, Midnight Ink, Ashfall, Frostbound — datasets can choose their own
 
 ## Publish to GitHub Pages (one-time, ~3 minutes)
 
@@ -31,8 +33,9 @@ Every future `git push` updates the site automatically.
 
 ## Roadmap
 
+- [x] Theme system + Eterna datasets (Grave of Wings, Gojarna)
 - [ ] Real PKM imports (Tana, Obsidian, Roam, Notion, CSV…)
-- [ ] Eterna theme + alternate visual themes
+- [ ] Eterna continent view — locations stitched into one Grand Map
 - [ ] Kingdom Selector UI (map categories → kingdoms)
 - [ ] Hard/Soft generation modes with checkpoint versioning
 - [ ] Publishing with privacy controls
