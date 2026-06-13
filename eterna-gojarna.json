@@ -1,0 +1,182 @@
+{
+  "title": "Gojarna",
+  "subtitle": "Eterna · the Northern Highlands · eternal winter",
+  "seaName": "The Vast Raging Seas",
+  "theme": "frostbound",
+
+  "kingdoms": [
+    {
+      "name": "The Barren Harbour",
+      "sub": "Only the bare necessity of surviving these winters",
+      "theme": "plains",
+      "position": "south",
+      "provinces": [
+        {
+          "name": "The Arrival",
+          "notes": [
+            { "title": "A hidden continent beyond the Northern Islands", "days": 10, "links": ["Written in old books and mythologies", "Protected by ocean and harsh weather"] },
+            { "title": "Written in old books and mythologies", "days": 60 },
+            { "title": "Protected by ocean and harsh weather", "days": 60 },
+            { "title": "Eternal Winter — it lives up to its name", "days": 10, "links": ["Blizzard monstrosities grow louder"] },
+            { "title": "Blizzard monstrosities grow louder", "days": 40 },
+            { "title": "Before the races departed to horizons", "days": 90, "links": ["The catastrophic event"] },
+            { "title": "The catastrophic event", "days": 90 }
+          ]
+        },
+        {
+          "name": "The Quays",
+          "notes": [
+            { "title": "Sailors looking down, carrying burdens", "days": 120 },
+            { "title": "Mongers waiting for the next customer", "days": 120 },
+            { "title": "Nothing much here — only survival", "days": 70, "links": ["Eternal Winter — it lives up to its name"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Snow Orc Cliffs",
+      "sub": "Milder in temperament, deeper in wounds",
+      "theme": "hills",
+      "position": "west",
+      "provinces": [
+        {
+          "name": "The Gravel Paths",
+          "notes": [
+            { "title": "Rough and burly, milder in temperament", "days": 30 },
+            { "title": "No warpaths carried here", "days": 50, "links": ["Isolation became the answer"] },
+            { "title": "Huts entrenched in the stone cliffs", "days": 80 },
+            { "title": "Tell me what you need, and get out quick", "days": 45 },
+            { "title": "They refuse to make eye contact", "days": 45, "links": ["They are afraid of themselves"] },
+            { "title": "Children fall silent when you near", "days": 45 }
+          ]
+        },
+        {
+          "name": "The Elder's Hearth",
+          "notes": [
+            { "title": "Tea with the Elder Orc", "days": 8, "links": ["The taste of sweet jasmine", "They are afraid of themselves", "Deep wounds in the generations"] },
+            { "title": "The taste of sweet jasmine", "days": 8, "links": ["Isolation became the answer"] },
+            { "title": "They are afraid of themselves", "days": 15, "links": ["They face their violent instincts daily"] },
+            { "title": "They face their violent instincts daily", "days": 15 },
+            { "title": "Deep wounds in the generations", "days": 20, "links": ["The civil war of the Orc clans"] },
+            { "title": "The civil war of the Orc clans", "days": 25, "links": ["The Greyskins of Ash", "Severed contact with the clans"] },
+            { "title": "The Greyskins of Ash", "days": 12, "links": ["They ate one of their own kind", "The vengeance of the Snow Orcs"] },
+            { "title": "They ate one of their own kind", "days": 12 },
+            { "title": "The vengeance of the Snow Orcs", "days": 25, "links": ["None of the others stepped forward"] },
+            { "title": "None of the others stepped forward", "days": 60 },
+            { "title": "Severed contact with the clans", "days": 60 },
+            { "title": "Isolation became the answer", "days": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Troll Wastes",
+      "sub": "Most of North Gojarna is theirs",
+      "theme": "mountains",
+      "position": "north",
+      "provinces": [
+        {
+          "name": "The Warrior Grounds",
+          "notes": [
+            { "title": "Vicious — they will not hesitate", "days": 35 },
+            { "title": "Tusk size and curve dictate rank", "days": 35 },
+            { "title": "Born in burrows, trained from birth", "days": 50 },
+            { "title": "Swords for the berserkers", "days": 18, "links": ["Crude, disposable Frost-Iron", "Teeth of prey on the hilt"] },
+            { "title": "Crude, disposable Frost-Iron", "days": 40 },
+            { "title": "Teeth of prey on the hilt", "days": 40 },
+            { "title": "Lances for the strategists", "days": 18, "links": ["The matriarchs lead the packs", "Savage orders, lust for victory"] },
+            { "title": "Savage orders, lust for victory", "days": 40 }
+          ]
+        },
+        {
+          "name": "The Hunting Walls",
+          "notes": [
+            { "title": "The matriarchs lead the packs", "days": 22, "links": ["Coordinated violence"] },
+            { "title": "They pierce from the skies", "days": 55, "links": ["Coordinated violence"] },
+            { "title": "Coordinated violence", "days": 22 },
+            { "title": "Rugs of wooly mammoths and sabretooths", "days": 70 },
+            { "title": "The heads of people on carved walls", "days": 70, "links": ["Intelligent races, rarely hunted, but..."] },
+            { "title": "Intelligent races, rarely hunted, but...", "days": 30 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lands of the Pale",
+      "sub": "Few in number, they reign in information",
+      "theme": "plains",
+      "position": "center",
+      "provinces": [
+        {
+          "name": "The Totem Town",
+          "notes": [
+            { "title": "The Pale reign in information and culture", "days": 14, "links": ["Borders born of necessity"] },
+            { "title": "Borders born of necessity", "days": 40 },
+            { "title": "The tower of smoke, a beacon", "days": 14, "links": ["Frost-iron with a copper hue", "A dragon's mouth faced to the sky"] },
+            { "title": "Frost-iron with a copper hue", "days": 60 },
+            { "title": "A dragon's mouth faced to the sky", "days": 30, "links": ["Zaarni, the Cold"] },
+            { "title": "Each layer a Giant of the world", "days": 25, "links": ["Astra the Proud", "Uldor the Tame", "Jalaaga the Curious", "Zaarni, the Cold"] },
+            { "title": "Astra the Proud", "days": 100 },
+            { "title": "Uldor the Tame", "days": 100 },
+            { "title": "Jalaaga the Curious", "days": 100 },
+            { "title": "Zaarni, the Cold", "days": 7, "links": ["Zaarni prefers isolation", "May Zaarni carry us on our weighted way"] },
+            { "title": "Zaarni prefers isolation", "days": 30, "links": ["The cost of surviving harsh environments"] },
+            { "title": "The cost of surviving harsh environments", "days": 30 },
+            { "title": "May Zaarni carry us on our weighted way", "days": 7 }
+          ]
+        },
+        {
+          "name": "The Headless Sage",
+          "notes": [
+            { "title": "A bronze Sage, head snapped off", "days": 9, "links": ["Holes shaped like a smiling face", "Curse stories at dusk"] },
+            { "title": "Holes shaped like a smiling face", "days": 9, "links": ["As if it was staring back"] },
+            { "title": "As if it was staring back", "days": 9 },
+            { "title": "An ornate cane — but which Sage?", "days": 35 },
+            { "title": "Curse stories at dusk", "days": 20, "links": ["The snow will pull you under", "Don't leave food, or it will eat you"] },
+            { "title": "The snow will pull you under", "days": 50 },
+            { "title": "Don't leave food, or it will eat you", "days": 50, "links": ["Mom, do ghosts even get hungry?"] },
+            { "title": "Mom, do ghosts even get hungry?", "days": 16 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Vapour Caverns",
+      "sub": "The Fourth Pillar — the Dead, the Memory",
+      "theme": "swamp",
+      "position": "east",
+      "provinces": [
+        {
+          "name": "The Frozen Door",
+          "notes": [
+            { "title": "Where vapours tell of leaking moments", "days": 5, "links": ["Covering, or protecting?"] },
+            { "title": "Covering, or protecting?", "days": 25 },
+            { "title": "A long lost civilisation", "days": 13, "links": ["Etchings of wolves living with children", "Not a single living soul inside"] },
+            { "title": "Etchings of wolves living with children", "days": 13 },
+            { "title": "Not a single living soul inside", "days": 45 }
+          ]
+        },
+        {
+          "name": "The Burrowed Labyrinth",
+          "notes": [
+            { "title": "A vast network of family burrows", "days": 55 },
+            { "title": "Stalagmites left to light the way", "days": 75 },
+            { "title": "The Guide and his intricate pipe", "days": 6, "links": ["Etched with the symbol of Zaarni", "Faces made of mist"] },
+            { "title": "Etched with the symbol of Zaarni", "days": 20, "links": ["Zaarni, the Cold"] },
+            { "title": "Faces made of mist", "days": 6, "links": ["Fragments of our lives, not spirits", "Blue when calm, vermillion in violence"] },
+            { "title": "Fragments of our lives, not spirits", "days": 6, "links": ["The Fourth Pillar is the Vapour"] },
+            { "title": "Blue when calm, vermillion in violence", "days": 28 },
+            { "title": "This is what we must protect", "days": 28 },
+            { "title": "Neutral ground for all Pillars", "days": 11, "links": ["Bringing the elderly to the caverns"] },
+            { "title": "Bringing the elderly to the caverns", "days": 11, "links": ["A chance to talk with the past", "Easing the eventual passing"] },
+            { "title": "A chance to talk with the past", "days": 11 },
+            { "title": "Easing the eventual passing", "days": 11 },
+            { "title": "The Fourth Pillar is the Vapour", "days": 5, "links": ["The people in your dreams", "None of them will guide you"] },
+            { "title": "The people in your dreams", "days": 17 },
+            { "title": "None of them will guide you", "days": 17 }
+          ]
+        }
+      ]
+    }
+  ]
+}
